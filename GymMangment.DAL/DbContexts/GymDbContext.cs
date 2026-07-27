@@ -7,11 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GymMangment.DAL.DbContexts
 {
-    public class GymDbContext : DbContext
+    public class GymDbContext: DbContext
     {
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }
