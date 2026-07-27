@@ -1,5 +1,7 @@
 
 using GymMangment.DAL.DbContexts;
+using GymMangment.DAL.Repositorities.Classes;
+using GymMangment.DAL.Repositorities.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace GYMMangmentSystem
@@ -14,6 +16,7 @@ namespace GYMMangmentSystem
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<GymDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
             var app = builder.Build();
 
