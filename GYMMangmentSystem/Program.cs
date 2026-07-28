@@ -1,3 +1,9 @@
+
+using GymMangment.DAL.DbContexts;
+using GymMangment.DAL.Repositorities.Classes;
+using GymMangment.DAL.Repositorities.Interfaces;
+using Microsoft.EntityFrameworkCore;
+
 namespace GYMMangmentSystem
 {
     public class Program
@@ -8,6 +14,9 @@ namespace GYMMangmentSystem
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<GymDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IPlanRepository, PlanRepository>();
 
             var app = builder.Build();
 
@@ -15,7 +24,6 @@ namespace GYMMangmentSystem
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
