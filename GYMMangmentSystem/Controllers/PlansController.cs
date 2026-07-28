@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace GYMMangmentSystem.PL.Controllers
 {
-    public class PlanController : Controller
+    public class PlansController : Controller
     {
         private readonly IPlanRepository planRepository;
-        public PlanController(IPlanRepository planRepository)
+        public PlansController(IPlanRepository planRepository)
         {
             this.planRepository = planRepository;
         }
