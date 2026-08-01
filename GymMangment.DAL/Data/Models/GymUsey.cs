@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GymMangment.DAL.Models.Enums;
+using GymMangment.DAL.Data.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace GymMangment.DAL.Models
+namespace GymMangment.DAL.Data.Models
 {
     public abstract class GymUsey : BaseEntity
     {

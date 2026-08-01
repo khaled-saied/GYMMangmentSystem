@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GymMangment.DAL.Models
+namespace GymMangment.DAL.Data.Models
 {
     public class Plan : BaseEntity
     {
@@ -13,5 +13,9 @@ namespace GymMangment.DAL.Models
         public decimal Price { get; set; }
         public int DurationDays { get; set; }
         public bool IsActive { get; set; }
+
+        #region Relationships
+        public ICollection<MemberShip> MemberShips { get; set; } = default!;
+        #endregion
     }
 }

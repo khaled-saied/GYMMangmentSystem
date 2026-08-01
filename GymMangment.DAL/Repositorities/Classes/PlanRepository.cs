@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GymMangment.DAL.DbContexts;
-using GymMangment.DAL.Models;
+using GymMangment.DAL.Data.DbContexts;
+using GymMangment.DAL.Data.Models;
 using GymMangment.DAL.Repositorities.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

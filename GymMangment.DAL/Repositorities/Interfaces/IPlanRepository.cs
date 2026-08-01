@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GymMangment.DAL.Models;
+using GymMangment.DAL.Data.Models;
 
 namespace GymMangment.DAL.Repositorities.Interfaces
 {

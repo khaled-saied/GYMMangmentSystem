@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GymMangment.DAL.Models;
+using GymMangment.DAL.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace GymMangment.DAL.Configurations
+namespace GymMangment.DAL.Data.Configurations
 {
     public class MemeberConfiguration : GymUserConfiguration<Member> , IEntityTypeConfiguration<Member>
     {
