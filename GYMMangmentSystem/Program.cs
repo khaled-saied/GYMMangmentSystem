@@ -1,4 +1,6 @@
 
+using GymMangment.BLL.Services.Classes;
+using GymMangment.BLL.Services.Interfaces;
 using GymMangment.DAL.Data.DbContexts;
 using GymMangment.DAL.Repositorities.Classes;
 using GymMangment.DAL.Repositorities.Interfaces;
@@ -18,6 +20,7 @@ namespace GYMMangmentSystem
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped<IMemberService, MemberService>();
 
             var app = builder.Build();
 

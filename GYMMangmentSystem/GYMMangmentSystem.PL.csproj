@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\GymMangment.DAL\GymMangment.DAL.csproj" />
+    <ProjectReference Include="..\GymMangment.BLL\GymMangment.BLL.csproj" />
   </ItemGroup>
 
 </Project>
