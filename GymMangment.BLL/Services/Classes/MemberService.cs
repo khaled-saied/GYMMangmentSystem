@@ -18,6 +18,7 @@ namespace GymMangment.BLL.Services.Classes
         {
             this._memberRepository = memberRepository;
         }
+
         public async Task<IEnumerable<MemberViewModel>> GetAllMembersAsync(CancellationToken ct = default)
         {
             var Members = await _memberRepository.GetAllAsync(ct: ct);
@@ -36,5 +37,42 @@ namespace GymMangment.BLL.Services.Classes
             });
             return MemberViewModels;
         }
+
+        public async Task<bool> CreateMemberAsync(CreateMemberViewModel model, CancellationToken ct = default)
+        {
+            //Check Email
+            var emailExists = await _memberRepository.AnyAsync(x => x.Email == model.Email, ct);
+            //Check Phone
+            var phoneExists = await _memberRepository.AnyAsync(x => x.Phone == model.Phone, ct);
+            //Email or Phone exists Return false
+            if (emailExists || phoneExists)
+                return false;
+            // Else Create Member and return true
+            var member = new Member
+            {
+                Name = model.Name,
+                Email = model.Email,
+                Phone = model.Phone,
+                DateOfBirth = model.DateOfBirth,
+                Gender = model.Gender,
+                Address = new Address
+                {
+                    BulidingNumber = model.BuildingNumber,
+                    City = model.City,
+                    Street = model.Street
+                },
+                HealthRecord = new HealthRecord
+                {
+                    BloodType = model.HealthRecordViewModel.BloodType,
+                    Weight = model.HealthRecordViewModel.Weight,
+                    Height = model.HealthRecordViewModel.Height,
+                    Note = model.HealthRecordViewModel.Note
+                }
+            };
+
+            var result = await _memberRepository.AddAsync(member);
+            return result > 0;
+        }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using GymMangment.DAL.Data.DbContexts;
@@ -47,6 +48,11 @@ namespace GymMangment.DAL.Repositorities.Classes
         {
             _dbSet.Update(entity);
             return _dbContext.SaveChangesAsync();
+        }
+
+        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+        {
+            return _dbSet.AsNoTracking().AnyAsync(predicate, ct);
         }
     }
 }
