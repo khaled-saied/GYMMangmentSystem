@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using GymMangment.DAL.Data.Models;
 using GymMangment.DAL.Repositorities.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,8 +7,8 @@ namespace GYMMangmentSystem.PL.Controllers
 {
     public class PlansController : Controller
     {
-        private readonly IPlanRepository planRepository;
-        public PlansController(IPlanRepository planRepository)
+        private readonly IGenericRepository<Plan> planRepository;
+        public PlansController(IGenericRepository<Plan> planRepository)
         {
             this.planRepository = planRepository;
         }
