@@ -41,6 +41,26 @@ namespace GYMMangmentSystem.PL.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-    
+
+        //Datails
+        [HttpGet]
+        public async Task<IActionResult> MemberDetails(int id, CancellationToken ct)
+        {
+            var member = await _service.GetMemberDetailsByIdAsync(id, ct);
+            if (member == null)
+            {
+                TempData["ErrorMessage"] = "Member not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(member);
+        }
+
+        //[HttpGet]
+        //public IActionResult HealthRecordDetails(int id, CancellationToken ct)
+        //{
+        //    var member = _service.(id, ct);
+        //}
+
+
     }
 }

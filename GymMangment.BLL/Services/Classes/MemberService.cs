@@ -13,10 +13,16 @@ namespace GymMangment.BLL.Services.Classes
     public class MemberService : IMemberService
     {
         private readonly IGenericRepository<Member> _memberRepository;
+        private readonly IGenericRepository<MemberShip> _membershipRepository;
+        private readonly IGenericRepository<Plan> _planRepository;
 
-        public MemberService(IGenericRepository<Member> memberRepository)
+        public MemberService(IGenericRepository<Member> memberRepository
+            , IGenericRepository<MemberShip> membershipRepository
+            ,IGenericRepository<Plan> planRepository)
         {
             this._memberRepository = memberRepository;
+            this._membershipRepository = membershipRepository;
+            this._planRepository = planRepository;
         }
 
         public async Task<IEnumerable<MemberViewModel>> GetAllMembersAsync(CancellationToken ct = default)
@@ -74,5 +80,35 @@ namespace GymMangment.BLL.Services.Classes
             return result > 0;
         }
 
+        public async Task<MemberViewModel?> GetMemberDetailsByIdAsync(int MemberId, CancellationToken ct = default)
+        {
+            var member = await _memberRepository.GetByIdAsync(MemberId, ct);
+            if (member == null)
+                return null;
+            var model = new MemberViewModel
+            {
+                Photo = member.Photo,
+                Name = member.Name,
+                Email = member.Email,
+                Phone = member.Phone,
+                DateOfBirth = member.DateOfBirth.ToShortDateString(),
+                Gender = member.Gender.ToString(),
+                Address = $"{member.Address.Street}, {member.Address.BulidingNumber}, {member.Address.City}",
+            };
+
+            var activeMemberShip = await _membershipRepository.FirstOrDefultAsync(x => x.MemberId == MemberId && x.EndDate > DateTime.Now);
+        
+            if (activeMemberShip != null)
+            {
+                var activePlan = await _planRepository.GetByIdAsync(activeMemberShip.PlanId, ct);
+                model.PlanaName = activePlan?.Name;
+
+                model.MemberShipStartDate = activeMemberShip.CreatedAt.ToString();
+                model.MemberShipEndDate = activeMemberShip.EndDate.ToString();
+            }
+
+            return model;
+
+        }
     }
 }
