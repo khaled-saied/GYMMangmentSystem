@@ -55,11 +55,17 @@ namespace GYMMangmentSystem.PL.Controllers
             return View(member);
         }
 
-        //[HttpGet]
-        //public IActionResult HealthRecordDetails(int id, CancellationToken ct)
-        //{
-        //    var member = _service.(id, ct);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> HealthRecordDetails(int id, CancellationToken ct)
+        {
+            var result = await _service.GetMemberHealthRecordAsync(id, ct);
+            if(result is null)
+            {
+                TempData["ErrorMessage"] = "Health Record not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(result);
+        }
 
 
     }
