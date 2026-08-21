@@ -61,12 +61,40 @@ namespace GYMMangmentSystem.PL.Controllers
             var result = await _service.GetMemberHealthRecordAsync(id, ct);
             if(result is null)
             {
-                TempData["ErrorMessage"] = "Health Record not found.";
+                TempData["ErrorMessage"] = "Health Record Is not found.";
                 return RedirectToAction(nameof(Index));
             }
             return View(result);
         }
 
+        #region Edit
+        [HttpGet]
+        public async Task<IActionResult> EditMember(int id, CancellationToken ct)
+        {
+            var member = await _service.GetMemberToUpdateAsync(id, ct);
+            if(member == null)
+            {
+                TempData["ErrorMessage"] = "Member Is not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View(member);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditMember([FromRoute]int id, MemberToUpdateViewModel model, CancellationToken ct)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var result= await _service.UpdateMemberDetailsAsync(id, model, ct);
+
+            if (result)
+                TempData["SuccessMessage"] = "Member Updated Successfully";
+            else
+                TempData["ErrorMessage"] = "Failed To Update Member";
+
+            return RedirectToAction(nameof(Index));
+        }
+        #endregion
 
     }
 }

@@ -44,7 +44,7 @@ namespace GymMangment.DAL.Repositorities.Classes
             return await _dbSet.FindAsync(id, ct);
         }
 
-        public Task<int> UpdateAsync(TEntity entity)
+        public Task<int> UpdateAsync(TEntity entity, CancellationToken ct = default)
         {
             _dbSet.Update(entity);
             return _dbContext.SaveChangesAsync();
