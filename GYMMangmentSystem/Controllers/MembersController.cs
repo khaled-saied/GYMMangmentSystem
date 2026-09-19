@@ -96,5 +96,32 @@ namespace GYMMangmentSystem.PL.Controllers
         }
         #endregion
 
+        #region Delete Member
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
+        {
+            var member = await _service.GetMemberDetailsByIdAsync(id, ct);
+            if (member == null)
+            {
+                TempData["ErrorMessage"] = "Member not found.";
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteConfirmed([FromRoute]int id, CancellationToken ct)
+        {
+            var result = await _service.DeleteMemberAsync(id, ct);
+            if (result)
+                TempData["SuccessMessage"] = "Member deleted successfully.";
+            else
+                TempData["ErrorMessage"] = "Failed to delete member.";
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        #endregion
+
     }
 }

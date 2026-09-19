@@ -16,16 +16,19 @@ namespace GymMangment.BLL.Services.Classes
         private readonly IGenericRepository<MemberShip> _membershipRepository;
         private readonly IGenericRepository<Plan> _planRepository;
         private readonly IGenericRepository<HealthRecord> _healthRecordRepositoy;
+        private readonly IGenericRepository<Booking> _bookingRepository;
 
         public MemberService(IGenericRepository<Member> memberRepository
             , IGenericRepository<MemberShip> membershipRepository
             ,IGenericRepository<Plan> planRepository,
-            IGenericRepository<HealthRecord> healthRecordRepositoy)
+            IGenericRepository<HealthRecord> healthRecordRepositoy,
+            IGenericRepository<Booking> bookingRepository)
         {
             this._memberRepository = memberRepository;
             this._membershipRepository = membershipRepository;
             this._planRepository = planRepository;
             this._healthRecordRepositoy = healthRecordRepositoy;
+            this._bookingRepository = bookingRepository;
         }
 
         public async Task<IEnumerable<MemberViewModel>> GetAllMembersAsync(CancellationToken ct = default)
@@ -167,6 +170,19 @@ namespace GymMangment.BLL.Services.Classes
             var result= await _memberRepository.UpdateAsync(member,ct);
 
             return result >0;
+        }
+
+        public async Task<bool> DeleteMemberAsync(int MemberId, CancellationToken ct = default)
+        {
+            var member = await _memberRepository.GetByIdAsync(MemberId, ct);
+            if(member == null) return false;
+
+            var hasFutureBookings = await _bookingRepository.AnyAsync(x => x.MemberId == MemberId && x.Session.StartDate > DateTime.Now, ct: ct);
+
+            if (hasFutureBookings)
+                return false;
+            var result = await _memberRepository.DeleteAsync(member, ct);
+            return result > 0;
         }
     }
 }

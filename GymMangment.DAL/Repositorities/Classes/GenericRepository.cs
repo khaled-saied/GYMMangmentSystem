@@ -27,7 +27,7 @@ namespace GymMangment.DAL.Repositorities.Classes
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteAsync(TEntity entity)
+        public async Task<int> DeleteAsync(TEntity entity, CancellationToken ct = default)
         {
             _dbSet.Remove(entity);
             return await _dbContext.SaveChangesAsync();
