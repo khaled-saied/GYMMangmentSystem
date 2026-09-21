@@ -1,5 +1,4 @@
-﻿@using GymMangment.DAL.Data.Models
-@model Plan
+﻿@model GymMangment.BLL.ViewModels.PlanViewModels.PlanViewModel
 
 <div class="container">
 	<main role="main" class="pb-3">
@@ -8,13 +7,13 @@
 			<div class="row justify-content-center">
 				<div class="col-md-6">
 					<div class="card shadow-lg border-0">
-						<div class="card-header text-white text-center py-5 @(Model.IsActive? "bg-primary-color" : "bg-secondary")">
+						<div class="card-header text-white text-center py-5 @(Model.IsActive ? "bg-primary-color" : "bg-secondary")">
 							<i class="bi bi-award display-4 mb-3"></i>
 							<h2 class="mb-0">@Model.Name</h2>
 						</div>
 						<div class="card-body p-4">
 							<div class="text-center mb-4 py-3 bg-light rounded">
-								<div class="display-3 fw-bold text-primary-color">@Model.Price</div>
+								<div class="display-3 fw-bold text-primary-color">@Model.Price.ToString("N0")</div>
 								<small class="text-muted fs-5">EGP</small>
 							</div>
 
@@ -46,7 +45,7 @@
 								<div class="detail-item mb-4">
 									<div class="d-flex align-items-center mb-2">
 										<div class="icon-box me-3">
-											<i class="bi fs-4 @(Model.IsActive? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger") "></i>
+											<i class="bi fs-4 @(Model.IsActive ? "bi-check-circle-fill text-success" : "bi-x-circle-fill text-danger")"></i>
 										</div>
 										<div>
 											<h6 class="mb-0 text-muted">Status</h6>

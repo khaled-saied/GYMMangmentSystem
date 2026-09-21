@@ -21,6 +21,12 @@ namespace GYMMangmentSystem
             //builder.Services.AddScoped<IPlanRepository, PlanRepository>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IMemberService, MemberService>();
+            builder.Services.AddScoped<IPlanService, PlanService>();
+            builder.Services.AddScoped<ITrainerService, TrainerService>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+            builder.Services.AddScoped<ISessionService, SessionService>();
+
 
             var app = builder.Build();
 
