@@ -12,18 +12,16 @@ namespace GymMangment.BLL.Services.Classes
 {
     public class TrainerService : ITrainerService
     {
-        private readonly IGenericRepository<Trainer> _trainerRepository;
-        private readonly IGenericRepository<Session> _sessionRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public TrainerService(IGenericRepository<Trainer> trainerRepository, IGenericRepository<Session> sessionRepository)
+        public TrainerService(IUnitOfWork unitOfWork)
         {
-            _trainerRepository = trainerRepository;
-            _sessionRepository = sessionRepository;
+            this._unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<TrainerViewModel>> GetAllTrainersAsync(CancellationToken ct = default)
         {
-            var trainers = await _trainerRepository.GetAllAsync(ct: ct);
+            var trainers = await _unitOfWork.GetRepository<Trainer>().GetAllAsync(ct: ct);
             return trainers.Select(t => new TrainerViewModel()
             {
                 Id = t.Id,
@@ -36,7 +34,7 @@ namespace GymMangment.BLL.Services.Classes
 
         public async Task<TrainerViewModel?> GetTrainerDetailsAsync(int trainerId, CancellationToken ct = default)
         {
-            var trainer = await _trainerRepository.GetByIdAsync(trainerId, ct);
+            var trainer = await _unitOfWork.GetRepository<Trainer>().GetByIdAsync(trainerId, ct);
             if (trainer == null)
                 return null;
             else
@@ -53,9 +51,9 @@ namespace GymMangment.BLL.Services.Classes
 
         public async Task<bool> CreateTrainerAsync(CreateTrainerViewModel model, CancellationToken ct = default)
         {
-            if (await _trainerRepository.AnyAsync(t => t.Email == model.Email, ct))
+            if (await _unitOfWork.GetRepository<Trainer>().AnyAsync(t => t.Email == model.Email, ct))
                 return false;
-            if (await _trainerRepository.AnyAsync(t => t.Phone == model.Phone, ct))
+            if (await _unitOfWork.GetRepository<Trainer>().AnyAsync(t => t.Phone == model.Phone, ct))
                 return false;
 
             var trainer = new Trainer()
@@ -74,13 +72,14 @@ namespace GymMangment.BLL.Services.Classes
                 }
             };
 
-            var result = await _trainerRepository.AddAsync(trainer);
+           _unitOfWork.GetRepository<Trainer>().Add(trainer);
+            var result = await _unitOfWork.SaveChangesAsync(ct);
             return result > 0;
         }
 
         public async Task<TrainerToUpdateViewModel?> GetTrainerToUpdateAsync(int trainerId, CancellationToken ct = default)
         {
-            var trainer = await _trainerRepository.GetByIdAsync(trainerId, ct);
+            var trainer = await _unitOfWork.GetRepository<Trainer>().GetByIdAsync(trainerId, ct);
             if (trainer == null)
                 return null;
             else
@@ -98,25 +97,26 @@ namespace GymMangment.BLL.Services.Classes
 
         public async Task<bool> RemoveTrainerAsync(int trainerId, CancellationToken ct = default)
         {
-            var trainer = await _trainerRepository.GetByIdAsync(trainerId, ct);
+            var trainer = await _unitOfWork.GetRepository<Trainer>().GetByIdAsync(trainerId, ct);
             if (trainer is null) return false;
 
-            var hasFutureSessions = await _sessionRepository.AnyAsync(s => s.TrainerId == trainerId && s.StartDate > DateTime.Now, ct);
+            var hasFutureSessions = await _unitOfWork.GetRepository<Session>().AnyAsync(s => s.TrainerId == trainerId && s.StartDate > DateTime.Now, ct);
             if (hasFutureSessions)
                 return false;
 
-            var result = await _trainerRepository.DeleteAsync(trainer, ct);
+            _unitOfWork.GetRepository<Trainer>().Delete(trainer);
+            var result = await _unitOfWork.SaveChangesAsync(ct);
             return result > 0;
         }
 
         public async Task<bool> UpdateTrainerDetailsAsync(int trainerId, TrainerToUpdateViewModel model, CancellationToken ct = default)
         {
-            var trainer = await _trainerRepository.GetByIdAsync(trainerId, ct);
+            var trainer = await _unitOfWork.GetRepository<Trainer>().GetByIdAsync(trainerId, ct);
             if (trainer is null) return false;
 
-            if (await _trainerRepository.AnyAsync(t => t.Email == model.Email && t.Id != trainerId, ct))
+            if (await _unitOfWork.GetRepository<Trainer>().AnyAsync(t => t.Email == model.Email && t.Id != trainerId, ct))
                 return false;
-            if (await _trainerRepository.AnyAsync(t => t.Phone == model.Phone && t.Id != trainerId, ct))
+            if (await _unitOfWork.GetRepository<Trainer>().AnyAsync(t => t.Phone == model.Phone && t.Id != trainerId, ct))
                 return false;
 
             trainer.Email = model.Email;
@@ -127,20 +127,22 @@ namespace GymMangment.BLL.Services.Classes
             trainer.Specialty = model.Specialties;
             trainer.UpdatedAt = DateTime.Now;
 
-            var result = await _trainerRepository.UpdateAsync(trainer, ct);
+            _unitOfWork.GetRepository<Trainer>().Update(trainer);
+            var result = await _unitOfWork.SaveChangesAsync(ct);
             return result > 0;
         }
 
         public async Task<bool> DeleteTrainerAsync(int trainerId, CancellationToken ct = default)
         {
-            var trainer = await _trainerRepository.GetByIdAsync(trainerId, ct);
+            var trainer = await _unitOfWork.GetRepository<Trainer>().GetByIdAsync(trainerId, ct);
             if (trainer is null) return false;
 
-            var hasFutureSessions = await _sessionRepository.AnyAsync(s => s.TrainerId == trainerId && s.StartDate > DateTime.Now, ct);
+            var hasFutureSessions = await _unitOfWork.GetRepository<Session>().AnyAsync(s => s.TrainerId == trainerId && s.StartDate > DateTime.Now, ct);
             if (hasFutureSessions)
                 return false;
 
-            var result = await _trainerRepository.DeleteAsync(trainer, ct);
+            _unitOfWork.GetRepository<Trainer>().Delete(trainer);
+            var result = await _unitOfWork.SaveChangesAsync(ct);
             return result > 0;
         }
     }
