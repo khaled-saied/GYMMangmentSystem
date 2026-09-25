@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.Execution;
 using GymMangment.BLL.ViewModels.MemberViewModels;
+using GymMangment.BLL.ViewModels.SessionViewModels;
 using GymMangment.DAL.Data.Models;
 using Member = GymMangment.DAL.Data.Models.Member;
 
@@ -10,9 +11,18 @@ namespace GymMangment.BLL
     {
         public MappingProfile()
         {
+            MapMember();
+            //<<==>>
+            MapSession();
+
+
+        }
+
+        private void MapMember()
+        {
             CreateMap<Member, MemberViewModel>()
-                .ForMember(dest => dest.Address, opt => opt.MapFrom(src => $"{src.Address.Street} - {src.Address.BulidingNumber} - {src.Address.City}"))
-                .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth.ToShortDateString()));
+               .ForMember(dest => dest.Address, opt => opt.MapFrom(src => $"{src.Address.Street} - {src.Address.BulidingNumber} - {src.Address.City}"))
+               .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth.ToShortDateString()));
 
 
             CreateMap<HealthRecord, HealthRecordViewModel>();
@@ -34,7 +44,7 @@ namespace GymMangment.BLL
                 });
 
 
-            CreateMap<CreateMemberViewModel,Member>()
+            CreateMap<CreateMemberViewModel, Member>()
                 .ForMember(dest => dest.Address, opt => opt.MapFrom(src => new Address
                 {
                     BulidingNumber = src.BuildingNumber,
@@ -48,8 +58,13 @@ namespace GymMangment.BLL
                     Height = src.HealthRecordViewModel.Height,
                     Note = src.HealthRecordViewModel.Note
                 }));
+        }
 
-
+        private void MapSession()
+        {
+            CreateMap<CreateSessionViewModel, Session>();
+            CreateMap<Trainer, TrainerSelectViewModel>();
+            CreateMap<Category, CategorySelectViewModel>();
         }
     }
 }
