@@ -1,4 +1,5 @@
 
+using GymMangment.BLL;
 using GymMangment.BLL.Services.Classes;
 using GymMangment.BLL.Services.Interfaces;
 using GymMangment.DAL.Data.DbContexts;
@@ -26,6 +27,7 @@ namespace GYMMangmentSystem
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<ISessionService, SessionService>();
+            builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
 
 
             var app = builder.Build();
