@@ -54,5 +54,23 @@ namespace GYMMangmentSystem.PL.Controllers
         }
 
         #endregion
+
+        [HttpGet]
+        public async Task<ActionResult> Details(int Id,CancellationToken ct)
+        {
+            var result = await _service.GetSessionByIdAsync(Id, ct);
+
+            if (result.success)
+            {
+                return View(result.value);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = result.error;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+    
+    
     }
 }
