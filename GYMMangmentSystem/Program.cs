@@ -1,17 +1,20 @@
 
+using System.Threading.Tasks;
 using GymMangment.BLL;
 using GymMangment.BLL.Services.Classes;
 using GymMangment.BLL.Services.Interfaces;
+using GymMangment.DAL.Data.DataSeeding;
 using GymMangment.DAL.Data.DbContexts;
 using GymMangment.DAL.Repositorities.Classes;
 using GymMangment.DAL.Repositorities.Interfaces;
+using GYMMangmentSystem.PL;
 using Microsoft.EntityFrameworkCore;
 
 namespace GYMMangmentSystem
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +34,10 @@ namespace GYMMangmentSystem
 
 
             var app = builder.Build();
+
+            await app.MigrateAndSeedDataBaseAsync();
+
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
