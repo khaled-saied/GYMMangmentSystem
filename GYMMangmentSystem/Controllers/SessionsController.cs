@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using GymMangment.BLL.Services.Interfaces;
 using GymMangment.BLL.ViewModels.SessionViewModels;
+using GymMangment.DAL.Data.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -70,7 +71,49 @@ namespace GYMMangmentSystem.PL.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-    
-    
+
+        #region Edit
+        [HttpGet]
+        public async Task<ActionResult> Edit(int id ,CancellationToken ct)
+        {
+            var session =await _service.GetSessionToUpdateAsync(id, ct);
+
+            if(session.success)
+            {
+                ViewBag.Trainers = new SelectList(await _service.GetTrainersForDropDownAsync(), "Id", "Name");
+                return View(session.value);
+            }
+            else
+            {
+                TempData["ErrorMessage"] = session.error;
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        [HttpPost]
+        public async Task<ActionResult> Edit(int id,UpdateSessionViewModel model , CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Trainers = new SelectList(await _service.GetTrainersForDropDownAsync(), "Id", "Name");
+                return View(model);
+            }
+
+            var result =  await _service.UpdateSessionAsync(id, model, ct);
+            if (result.success)
+            {
+                TempData["SuccessMessage"] = "Session Updated successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+
+                TempData["ErrorMessage"] = result.error;
+                ViewBag.Trainers = new SelectList(await _service.GetTrainersForDropDownAsync(), "Id", "Name");
+                return View(model);
+            }
+        }
+
+        #endregion
+
     }
 }
