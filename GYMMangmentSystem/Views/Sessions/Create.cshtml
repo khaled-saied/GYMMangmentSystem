@@ -4,27 +4,21 @@
     ViewData["Title"] = "Create Session";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@if (TempData["SuccessMessage"] != null)
-{
-    <div id="Alert" class="alert alert-success alert-dismissible fade show">
-        <i class="bi bi-check-circle-fill me-2"></i>
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-}
-else if (TempData["ErrorMessage"] != null)
-{
-    <div id="Alert" class="alert alert-danger alert-dismissible fade show">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        @TempData["ErrorMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-}
+
 <div class="container mt-4">
     <header class="mb-4">
         <h3 class="text-primary-color">Create New Session</h3>
         <p class="text-muted">Schedule a new training session</p>
     </header>
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+    <div id="Alert" class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    }
 
     <form asp-action="Create" method="post">
         <div class="row justify-content-center">
@@ -155,10 +149,9 @@ else if (TempData["ErrorMessage"] != null)
         });
     </script>
 
-
-
-}
-
-@section ValidationScripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <partial name="_AlertBoxScript" />
 }
+
+ 

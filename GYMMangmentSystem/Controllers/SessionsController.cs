@@ -37,12 +37,12 @@ namespace GYMMangmentSystem.PL.Controllers
                 return View(model);
             }
             var result = await _service.CreateSessionAsync(model, ct);
-            if (result)
+            if (result.success)
             {
                 TempData["SuccessMessage"] = "Session created successfully.";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["ErrorMessage"] = "Failed to create session.";
+            TempData["ErrorMessage"] = result.error;
             await PopulateDropDownListsAsync();
             return View(model);
         }
