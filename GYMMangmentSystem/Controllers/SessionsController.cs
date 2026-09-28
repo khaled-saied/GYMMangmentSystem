@@ -115,5 +115,34 @@ namespace GYMMangmentSystem.PL.Controllers
 
         #endregion
 
+        #region Delete
+        [HttpGet]
+        public async Task<ActionResult> Delete(int id ,CancellationToken ct)
+        {
+            var result = await _service.GetSessionByIdAsync(id, ct);
+            if (result.success)
+            {
+                return View(result.value);
+            }
+            else
+            {
+
+                TempData["ErrorMessage"] = result.error;
+                return RedirectToAction(nameof(Index));
+            }
+
+        }
+        [HttpPost]
+        public async Task<ActionResult> DeleteConfirmed(int id, CancellationToken ct)
+        {
+            var result = await _service.DeleteSessionAsync(id, ct);
+
+            TempData[result.success ? "SuccessMessage" : "ErrorMessage"] = result.success? "Session Deleted successfully." : result.error;
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        #endregion
+
     }
 }

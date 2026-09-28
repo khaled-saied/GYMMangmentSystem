@@ -160,5 +160,23 @@ namespace GymMangment.BLL.Services.Classes
             var result= await _unitOfWork.SaveChangesAsync(ct);
             return result > 0 ? Result.Ok() : Result.Fail("Failes To Update Session");
         }
+
+        public async Task<Result> DeleteSessionAsync(int sessionId, CancellationToken ct = default)
+        {
+            var session = await _unitOfWork.SessionRepository.GetByIdAsync(sessionId, ct);
+            if (session is null)
+                return Result.NotFound("Session Not Foun");
+
+            if (session.EndDate >= DateTime.Now)
+                return Result.Fail("Can not Deleted Session That Has Not Ended Yet ");
+
+            var bookingCount = await _unitOfWork.SessionRepository.GetCountOfBookSlotsAsync(sessionId, ct);
+            if (bookingCount > 0)
+                return Result.Fail("Can not update a session that has bookings.");
+
+            _unitOfWork.SessionRepository.Delete(session);
+            var result = await _unitOfWork.SaveChangesAsync(ct);
+            return result > 0 ? Result.Ok() : Result.Fail("Failed To Delete Session");
+        }
     }
 }
