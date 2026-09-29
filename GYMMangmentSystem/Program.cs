@@ -30,6 +30,7 @@ namespace GYMMangmentSystem
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<ISessionService, SessionService>();
+            builder.Services.AddScoped<IAnalyticService, AnalyticService>();
             builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
 
 
