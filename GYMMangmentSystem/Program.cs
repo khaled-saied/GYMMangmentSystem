@@ -1,16 +1,20 @@
 
+using System.Threading.Tasks;
+using GymMangment.BLL;
 using GymMangment.BLL.Services.Classes;
 using GymMangment.BLL.Services.Interfaces;
+using GymMangment.DAL.Data.DataSeeding;
 using GymMangment.DAL.Data.DbContexts;
 using GymMangment.DAL.Repositorities.Classes;
 using GymMangment.DAL.Repositorities.Interfaces;
+using GYMMangmentSystem.PL;
 using Microsoft.EntityFrameworkCore;
 
 namespace GYMMangmentSystem
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -26,9 +30,15 @@ namespace GYMMangmentSystem
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<ISessionService, SessionService>();
+            builder.Services.AddScoped<IAnalyticService, AnalyticService>();
+            builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
 
 
             var app = builder.Build();
+
+            await app.MigrateAndSeedDataBaseAsync();
+
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
