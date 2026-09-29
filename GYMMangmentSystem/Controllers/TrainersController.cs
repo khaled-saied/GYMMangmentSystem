@@ -14,7 +14,15 @@ namespace GYMMangmentSystem.PL.Controllers
         }
 
         public async Task<IActionResult> Index(CancellationToken ct)
-            => View(await _trainerService.GetAllTrainersAsync(ct));
+        {
+            var result = await _trainerService.GetAllTrainersAsync(ct);
+            if (!result.success)
+            {
+                TempData["ErrorMessage"] = result.error;
+                return View(Enumerable.Empty<TrainerViewModel>());
+            }
+            return View(result.value);
+        }
 
         [HttpGet]
         public IActionResult Create() => View();
@@ -25,37 +33,37 @@ namespace GYMMangmentSystem.PL.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var result = await _trainerService.CreateTrainerAsync(model, ct);
-            if (result)
+            if (result.success)
             {
                 TempData["SuccessMessage"] = "Trainer created successfully.";
                 return RedirectToAction(nameof(Index));
             }
-            TempData["ErrorMessage"] = "Trainer Failed create";
+            TempData["ErrorMessage"] = result.error;
             return View(model);
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(int id, CancellationToken ct)
         {
-            var trainer = await _trainerService.GetTrainerDetailsAsync(id, ct);
-            if (trainer is null)
+            var result = await _trainerService.GetTrainerDetailsAsync(id, ct);
+            if (!result.success)
             {
-                TempData["ErrorMessage"] = "Trainer not found.";
+                TempData["ErrorMessage"] = result.error;
                 return RedirectToAction(nameof(Index));
             }
-            return View(trainer);
+            return View(result.value);
         }
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id, CancellationToken ct)
         {
-            var trainer = await _trainerService.GetTrainerToUpdateAsync(id, ct);
-            if (trainer is null)
+            var result = await _trainerService.GetTrainerToUpdateAsync(id, ct);
+            if (!result.success)
             {
-                TempData["ErrorMessage"] = "Trainer not found.";
+                TempData["ErrorMessage"] = result.error;
                 return RedirectToAction(nameof(Index));
             }
-            return View(trainer);
+            return View(result.value);
         }
 
         [HttpPost]
@@ -64,13 +72,13 @@ namespace GYMMangmentSystem.PL.Controllers
             if (!ModelState.IsValid) return View(model);
 
             var result = await _trainerService.UpdateTrainerDetailsAsync(id, model, ct);
-            if (result)
+            if (result.success)
             {
                 TempData["SuccessMessage"] = "Trainer updated successfully.";
             }
             else
             {
-                TempData["ErrorMessage"] = "Trainer Failed To update";
+                TempData["ErrorMessage"] = result.error;
             }
             return RedirectToAction(nameof(Index));
         }
@@ -78,23 +86,23 @@ namespace GYMMangmentSystem.PL.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id, CancellationToken ct)
         {
-            var trainer = await _trainerService.GetTrainerDetailsAsync(id, ct);
-            if (trainer is null)
+            var result = await _trainerService.GetTrainerDetailsAsync(id, ct);
+            if (!result.success)
             {
-                TempData["ErrorMessage"] = "Trainer not found.";
+                TempData["ErrorMessage"] = result.error;
                 return RedirectToAction(nameof(Index));
             }
-            return View();
+            return View(result.value);
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteConfirmed(int id, CancellationToken ct)
         {
             var result = await _trainerService.DeleteTrainerAsync(id, ct);
-            if (result)
+            if (result.success)
                 TempData["SuccessMessage"] = "Trainer deleted successfully.";
             else
-                TempData["ErrorMessage"] = "Failed To delete Trainer";
+                TempData["ErrorMessage"] = result.error ;
             return RedirectToAction(nameof(Index));
         }
     }
