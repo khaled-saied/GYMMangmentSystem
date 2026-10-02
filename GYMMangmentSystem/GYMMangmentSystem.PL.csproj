@@ -18,4 +18,8 @@
     <ProjectReference Include="..\GymMangment.BLL\GymMangment.BLL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="MembersPhoto\" />
+  </ItemGroup>
+
 </Project>

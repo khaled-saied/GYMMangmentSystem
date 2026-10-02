@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using GymMangment.BLL.Common;
+using GymMangment.BLL.Services.Attachment;
 using GymMangment.BLL.Services.Interfaces;
 using GymMangment.BLL.ViewModels.MemberViewModels;
 using GymMangment.DAL.Data.Models;
@@ -16,11 +17,13 @@ namespace GymMangment.BLL.Services.Classes
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IAttachmentService _attachmentService;
 
-        public MemberService(IUnitOfWork unitOfWork,IMapper mapper)
+        public MemberService(IUnitOfWork unitOfWork,IMapper mapper,IAttachmentService attachmentService)
         {
             this._unitOfWork = unitOfWork;
             this._mapper = mapper;
+            this._attachmentService = attachmentService;
         }
 
         public async Task<Result<IEnumerable<MemberViewModel>>> GetAllMembersAsync(CancellationToken ct = default)
@@ -36,6 +39,21 @@ namespace GymMangment.BLL.Services.Classes
 
         public async Task<Result> CreateMemberAsync(CreateMemberViewModel model, CancellationToken ct = default)
         {
+            // Check Email format/domain
+            var allowedEmailDomains = new[]
+                        {
+                "@gmail.com",
+                "@yahoo.com",
+                "@outlook.com",
+                "@hotmail.com"
+            };
+
+            if (!allowedEmailDomains.Any(domain =>
+                model.Email.EndsWith(domain, StringComparison.OrdinalIgnoreCase)))
+            {
+                return Result.Validation(
+                    "Email must end with @gmail.com, @yahoo.com, @outlook.com, or @hotmail.com.");
+            }
             //Check Email
             var emailExists = await _unitOfWork.GetRepository<Member>().AnyAsync(x => x.Email == model.Email, ct);
             //Check Phone
@@ -43,12 +61,30 @@ namespace GymMangment.BLL.Services.Classes
             //Email or Phone exists Return false
             if (emailExists || phoneExists)
                 return Result.Validation("Email or Phone already exists.");
+
+            //Upload Photo 
+
+            var storedPhotName = await _attachmentService.UploadFileAsync(model.PhotoFile.OpenReadStream(), model.PhotoFile.FileName, "MembersPhoto");
+            if (string.IsNullOrEmpty(storedPhotName.ToString()))
+                return Result.Fail("Failed to upload photo.");
+
+
             // Else Create Member and return true
             var member = _mapper.Map<CreateMemberViewModel, Member>(model);
+            member.Photo = storedPhotName.ToString();
 
             _unitOfWork.GetRepository<Member>().Add(member);
             var result = await _unitOfWork.SaveChangesAsync(ct);
-            return result > 0 ? Result.Ok() : Result.Fail("Failed to create member.");
+            
+            if(result > 0)
+            {
+                return Result.Ok();
+            }
+            else
+            {
+                //Delete the uploaded photo if member creation failed
+                return Result.Fail("Failed to create member.");
+            }
         }
 
         public async Task<Result<MemberViewModel?>> GetMemberDetailsByIdAsync(int MemberId, CancellationToken ct = default)

@@ -1,6 +1,7 @@
 
 using System.Threading.Tasks;
 using GymMangment.BLL;
+using GymMangment.BLL.Services.Attachment;
 using GymMangment.BLL.Services.Classes;
 using GymMangment.BLL.Services.Interfaces;
 using GymMangment.DAL.Data.DataSeeding;
@@ -31,6 +32,7 @@ namespace GYMMangmentSystem
             builder.Services.AddScoped<ISessionRepository, SessionRepository>();
             builder.Services.AddScoped<ISessionService, SessionService>();
             builder.Services.AddScoped<IAnalyticService, AnalyticService>();
+            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
             builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
 
 
