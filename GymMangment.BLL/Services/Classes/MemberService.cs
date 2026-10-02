@@ -71,7 +71,7 @@ namespace GymMangment.BLL.Services.Classes
 
             // Else Create Member and return true
             var member = _mapper.Map<CreateMemberViewModel, Member>(model);
-            member.Photo = storedPhotName.ToString();
+            member.Photo = storedPhotName.value;
 
             _unitOfWork.GetRepository<Member>().Add(member);
             var result = await _unitOfWork.SaveChangesAsync(ct);
@@ -83,6 +83,7 @@ namespace GymMangment.BLL.Services.Classes
             else
             {
                 //Delete the uploaded photo if member creation failed
+                _attachmentService.DeleteFile(storedPhotName.ToString(), "MembersPhoto");
                 return Result.Fail("Failed to create member.");
             }
         }

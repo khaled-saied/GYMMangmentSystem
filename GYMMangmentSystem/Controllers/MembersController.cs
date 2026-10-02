@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using GymMangment.BLL.Services.Attachment;
 using GymMangment.BLL.Services.Interfaces;
 using GymMangment.BLL.ViewModels.MemberViewModels;
 using GymMangment.BLL.ViewModels.TrainerViewModels;
@@ -9,11 +10,31 @@ namespace GYMMangmentSystem.PL.Controllers
     public class MembersController : Controller
     {
         private readonly IMemberService _service;
+        private readonly IAttachmentService _attachmentService;
 
-        public MembersController(IMemberService service)
+        public MembersController(IMemberService service,IAttachmentService attachmentService)
         {
             this._service = service;
+            this._attachmentService = attachmentService;
         }
+
+        #region Get Member Photo
+        [HttpGet]
+        public async Task<ActionResult> Picture(int id)
+        {
+            var member =await _service.GetMemberDetailsByIdAsync(id);
+            if(member == null || string.IsNullOrWhiteSpace(member.value!.Photo))
+                return NotFound();
+            
+            var result = _attachmentService.GetFile(member.value.Photo, "MembersPhoto");
+            if (result == null || !result.success)
+                return NotFound();
+
+
+            return File(result.value.stream, result.value.ContentType);
+        }
+        #endregion
+
 
         [HttpGet]
         public async Task<IActionResult> Index(CancellationToken ct)

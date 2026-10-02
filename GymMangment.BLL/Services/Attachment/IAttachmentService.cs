@@ -11,5 +11,8 @@ namespace GymMangment.BLL.Services.Attachment
     public interface IAttachmentService
     {
         Task<Result<string>> UploadFileAsync(Stream fileStream,string fileName, string folderName, CancellationToken ct = default);
+        Result DeleteFile(string fileName,string folderName);
+
+        Result<(Stream stream, string ContentType)> GetFile(string fileName, string folderName);
     }
 }
