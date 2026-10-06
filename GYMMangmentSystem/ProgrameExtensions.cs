@@ -1,5 +1,7 @@
 ﻿using GymMangment.DAL.Data.DataSeeding;
 using GymMangment.DAL.Data.DbContexts;
+using GymMangment.DAL.Data.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GYMMangmentSystem.PL
@@ -12,6 +14,8 @@ namespace GYMMangmentSystem.PL
 
             var dbContext = scope.ServiceProvider.GetRequiredService<GymDbContext>();
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
             var pendingMigration = await dbContext.Database.GetPendingMigrationsAsync();
 
@@ -32,6 +36,8 @@ namespace GYMMangmentSystem.PL
                 dbContext,
                 seedFolderPath,
                 logger);
+
+            await IdentityDataSeeding.SeedIdentityDataAsync(roleManager,userManager,logger);
         }
     }
 }

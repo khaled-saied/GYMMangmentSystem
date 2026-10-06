@@ -6,9 +6,11 @@ using GymMangment.BLL.Services.Classes;
 using GymMangment.BLL.Services.Interfaces;
 using GymMangment.DAL.Data.DataSeeding;
 using GymMangment.DAL.Data.DbContexts;
+using GymMangment.DAL.Data.Models;
 using GymMangment.DAL.Repositorities.Classes;
 using GymMangment.DAL.Repositorities.Interfaces;
 using GYMMangmentSystem.PL;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GYMMangmentSystem
@@ -34,6 +36,9 @@ namespace GYMMangmentSystem
             builder.Services.AddScoped<IAnalyticService, AnalyticService>();
             builder.Services.AddScoped<IAttachmentService, AttachmentService>();
             builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<GymDbContext>()
+                .AddDefaultTokenProviders();
 
 
             var app = builder.Build();
