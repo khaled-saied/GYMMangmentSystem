@@ -49,7 +49,7 @@ namespace GYMMangmentSystem.PL.Controllers
                 _logger.LogInformation($"User {user.UserName}Is Signed in.");
                 return RedirectToAction(nameof(HomeController.Index), "Home");
             }
-            else if(result.IsLockedOut)
+            else if (result.IsLockedOut)
             {
                 _logger.LogWarning($"User {user.UserName}Is Locked out.");
                 ModelState.AddModelError("InvalidLogin", "Your Account is Locked Out.");
@@ -71,6 +71,14 @@ namespace GYMMangmentSystem.PL.Controllers
             _logger.LogInformation("User Logged Out.");
             return RedirectToAction(nameof(Login));
         }
+
+
         //Get -=> Access Denied
+        [HttpGet]
+        public IActionResult AccessDenied()
+        {
+            return View();
+
+        }
     }
 }
