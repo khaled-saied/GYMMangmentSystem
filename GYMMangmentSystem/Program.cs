@@ -37,8 +37,8 @@ namespace GYMMangmentSystem
             builder.Services.AddScoped<IAttachmentService, AttachmentService>();
             builder.Services.AddAutoMapper(m => m.AddProfile(new MappingProfile()));
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<GymDbContext>()
-                .AddDefaultTokenProviders();
+                .AddEntityFrameworkStores<GymDbContext>();
+                //.AddDefaultTokenProviders();
 
 
             var app = builder.Build();
@@ -57,12 +57,13 @@ namespace GYMMangmentSystem
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            app.UseAuthentication();    
             app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}")
+                pattern: "{controller=Account}/{action=Login}/{id?}")
                 .WithStaticAssets();
 
             app.Run();

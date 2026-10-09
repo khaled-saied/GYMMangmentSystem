@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using GYMMangmentSystem.Models;
 using GymMangment.BLL.Services.Interfaces;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GYMMangmentSystem.Controllers;
 
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

@@ -3,10 +3,12 @@ using GymMangment.BLL.Services.Attachment;
 using GymMangment.BLL.Services.Interfaces;
 using GymMangment.BLL.ViewModels.MemberViewModels;
 using GymMangment.BLL.ViewModels.TrainerViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GYMMangmentSystem.PL.Controllers
 {
+    [Authorize(Roles ="SuperAdmin")]
     public class MembersController : Controller
     {
         private readonly IMemberService _service;

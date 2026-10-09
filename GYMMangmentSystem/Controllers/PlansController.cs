@@ -4,10 +4,12 @@ using GymMangment.BLL.ViewModels.PlanViewModels;
 using GymMangment.BLL.ViewModels.TrainerViewModels;
 using GymMangment.DAL.Data.Models;
 using GymMangment.DAL.Repositorities.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GYMMangmentSystem.PL.Controllers
 {
+    [Authorize]
     public class PlansController : Controller
     {
         private readonly IPlanService _service;
