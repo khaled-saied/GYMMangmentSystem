@@ -2,6 +2,7 @@
 using GymMangment.BLL.ViewModels.AccountViewModel;
 using GymMangment.DAL.Data.Models;
 using GYMMangmentSystem.Controllers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,7 @@ namespace GYMMangmentSystem.PL.Controllers
         {
             return View();
         }
+        //2=>Post Login -> Submit Form
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model, CancellationToken ct)
         {
@@ -60,9 +62,15 @@ namespace GYMMangmentSystem.PL.Controllers
             }
         }
 
-
-        //2=>Post Login -> Submit Form
         //3=>Post ->Logout
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Logout(CancellationToken ct)
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation("User Logged Out.");
+            return RedirectToAction(nameof(Login));
+        }
         //Get -=> Access Denied
     }
 }
